@@ -26,9 +26,9 @@ cp("data.main", output_name * ".inputfile", force=true)
 rng = Random.MersenneTwister()
 
 # Get MCMC options
-kT = haskey(options, "radius") ? parse(Float64, options["kT"][1]) : 0
+kT = haskey(options, "kT") ? parse(Float64, options["kT"][1]) : 0
 dx = haskey(options, "dx") ? parse(Float64, options["dx"][1]) : 1
-dtheta = haskey(options, "dx") ? parse(Float64, options["dtheta"][1]) : pi
+dtheta = haskey(options, "dtheta") ? parse(Float64, options["dtheta"][1]) : pi
 
 # Set energy parameters
 radius = haskey(options, "radius") ? parse(Int, options["radius"][1]) : Inf
