@@ -6,7 +6,13 @@ module body_module
 mutable struct body
   q::Vector{Float64}
   orientation
+  q_old::Vector{Float64}
+  orientation_old
   r_vectors::Array{Float64,2}
+
+  function body(q, orientation, r_vectors)
+    new(q, orientation, copy(q), copy(orientation), r_vectors)
+  end
 end
 
 function get_r_vectors(b)
@@ -25,7 +31,7 @@ function get_r_vectors(b)
   return r_vectors
 end
 
-function get_rotation_matrix(orientation::Float64)
+function get_rotation_matrix(orientation::Number)
   R = [cos(orientation) -sin(orientation);
        sin(orientation)  cos(orientation)]
   return R

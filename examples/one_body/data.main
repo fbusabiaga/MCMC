@@ -1,0 +1,15 @@
+# Number of steps and save frequency
+n_steps                                  10
+n_save                                   1
+initial_step                             -1
+
+# Define thermal energy
+kT                                       1
+dx                                       5
+dtheta                                   0.5
+
+# Define energy parameters
+radius                                   10
+
+# Oputfile
+output_name                              ../../data/run1
