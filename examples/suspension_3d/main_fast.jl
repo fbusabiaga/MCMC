@@ -7,10 +7,10 @@ import NearestNeighbors
 # Include local modules
 include("../../src/read_input/read_input.jl")
 import .read_input
-include("../../src/body/body.jl")
-import .body_module
 include("../../src/quaternion/quaternion.jl")
 using .quaternion_module
+include("../../src/body/body.jl")
+import .body_module
 include("../../src/many_bodies/many_bodies_utils.jl")
 import .many_bodies_utils
 include("energy.jl")
