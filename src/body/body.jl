@@ -10,7 +10,7 @@ mutable struct body
   Nmarkers::Int64
 
   function body(q, orientation, r_vectors)
-    new(q, orientation, copy(q), copy(orientation), r_vectors, size(r_vectors)[2])
+    new(q, orientation, copy(q), deepcopy(orientation), r_vectors, size(r_vectors)[2])
   end
 end
 
@@ -32,7 +32,12 @@ function get_rotation_matrix(orientation::Number)
        sin(orientation)  cos(orientation)]
   return R
 end
-                           
+
+function get_rotation_matrix(orientation)
+  R = Main.quaternion_module.rotation_matrix(orientation)
+  return R
+end
+
 
 
 end

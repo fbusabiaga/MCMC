@@ -1,9 +1,11 @@
-# module quaternion_module
+module quaternion_module
 "Define quaternion and its methods."
 
 # Load modules
 import LinearAlgebra as LA
 
+# Exports
+# export quaternion
 
 struct quaternion
   "Unit quaternion (s,p)."
@@ -21,6 +23,8 @@ struct quaternion
   end 
 end
 
+# Print quaternion in nice way
+Base.show(io::IO, q::quaternion) = print(io, q.s, " ", join(q.p, " "))
 
 function from_rotation(phi)
   "Create a quaternion given an angle of rotation phi"
@@ -58,4 +62,4 @@ function rotation_matrix(q)
 end
   
 
-# end
+end

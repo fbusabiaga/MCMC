@@ -1,17 +1,15 @@
 module many_bodies_utils
 "Define utilities to handle many bodies."
 
-include("../../src/body/body.jl")
-import .body_module
 
 function get_r_vectors(bodies)
   "Return r_vectors for the current bodies orientations."
  
   # Prepare vector and rotation matrix
-  r_vectors = body_module.get_r_vectors(bodies[1])
+  r_vectors = Main.body_module.get_r_vectors(bodies[1])
   offset = 1 + bodies[1].Nmarkers
   for b in bodies[2:end]
-    r_vectors = hcat(r_vectors, body_module.get_r_vectors(b))
+    r_vectors = hcat(r_vectors, Main.body_module.get_r_vectors(b))
     offset += b.Nmarkers
   end
   return r_vectors
