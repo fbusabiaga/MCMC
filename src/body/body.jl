@@ -10,7 +10,7 @@ mutable struct body
   Nmarkers::Int64
 
   function body(q, orientation, r_vectors)
-    new(q, orientation, copy(q), copy(orientation), r_vectors, size(r_vectors)[1])
+    new(q, orientation, copy(q), copy(orientation), r_vectors, size(r_vectors)[2])
   end
 end
 
@@ -22,9 +22,7 @@ function get_r_vectors(b)
   r_vectors = Array{Float64,2}(undef, 2, b.Nmarkers)
 
   # Compute points coordinates
-  for i = 1 : b.Nmarkers
-    r_vectors[1:end, i] = b.q + R * b.r_vectors[1:end, i]
-  end
+  r_vectors = b.q .+ R * b.r_vectors
 
   return r_vectors
 end
