@@ -2,7 +2,6 @@
 
 # Include external modules
 import Random
-# using Random
 
 # Include local modules
 include("../../src/read_input/read_input.jl")
@@ -11,9 +10,6 @@ include("../../src/body/body.jl")
 using .body_module
 include("energy.jl")
 
-
-# Start
-print("Start\n")
 
 # Read input
 options = read_input.read_input_file("data.main")
@@ -90,6 +86,4 @@ if (n_steps % n_save == 0)
   println(f_config, join(b.q, " "), " ", b.orientation)
 end
 
-# End
-print("End\n")
 

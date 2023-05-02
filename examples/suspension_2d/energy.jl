@@ -16,7 +16,7 @@ function external_enery(b, radius)
 end
 
 
-function pairwise_energy(b, bodies, range)
+function pairwise_energy_bodies(b, bodies, range)
   energy = 0
   for bi in bodies
     if bi === b
@@ -25,7 +25,21 @@ function pairwise_energy(b, bodies, range)
     d = LA.norm(b.q - bi.q)
     denergy = d < range ? 1e+06 * (range - d) : 0
     energy += denergy
-    # println("energy = ", d, " ", denergy)
+  end
+  return energy
+end
+
+
+function pairwise_energy_surface(ri, r_vectors, e0, lambda)
+  energy = 0
+  for i = 1:size(ri, 1)
+    rii = ri[i,1:end]
+    for j = 1:size(r_vectors, 1)
+      rj = r_vectors[j,1:end]
+      d = LA.norm(rii - rj)
+      energy += e0 * exp(-d / lambda)
+      # println("oo = ", -d / lambda, "   ", exp(-d / lambda))b
+    end
   end
   return energy
 end
