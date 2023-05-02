@@ -36,11 +36,11 @@ bodies = []
 for i = 1:number_bodies
   q = (rand(rng, Float64, 2) - [0.5, 0.5]) * radius
   orientation = rand(rng, Float64) * 2 * pi
-  N_blobs = 32
-  theta = collect(range(0,2*pi,length=N_blobs+1)[1:end-1])
-  r_vectors = Array{Float64,2}(undef, N_blobs, 2)
-  r_vectors[:,1] = radius_body * cos.(theta)
-  r_vectors[:,2] = radius_body * sin.(theta)
+  Nmarkers = 32
+  theta = collect(range(0,2*pi,length=Nmarkers+1)[1:end-1])
+  r_vectors = Array{Float64,2}(undef, 2, Nmarkers)
+  r_vectors[1,:] = radius_body * cos.(theta)
+  r_vectors[2,:] = radius_body * sin.(theta)
   b = body_module.body(q, orientation, r_vectors)
   push!(bodies, b)
 end

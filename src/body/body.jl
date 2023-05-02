@@ -19,11 +19,11 @@ function get_r_vectors(b)
   
   # Prepare vector and rotation matrix
   R = get_rotation_matrix(b.orientation)
-  r_vectors = Array{Float64,2}(undef, b.Nmarkers, 2)
+  r_vectors = Array{Float64,2}(undef, 2, b.Nmarkers)
 
   # Compute points coordinates
   for i = 1 : b.Nmarkers
-    r_vectors[i,1:end] = b.q + R * b.r_vectors[i,1:end]
+    r_vectors[1:end, i] = b.q + R * b.r_vectors[1:end, i]
   end
 
   return r_vectors

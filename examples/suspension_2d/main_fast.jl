@@ -44,9 +44,9 @@ for i = 1:number_bodies
   orientation = Random.rand(rng, Float64) * 2 * pi
   Nmarkers = 32
   theta = collect(range(0,2*pi,length=Nmarkers+1)[1:end-1])
-  r_vectors = Array{Float64,2}(undef, Nmarkers, 2)
-  r_vectors[:,1] = radius_body * cos.(theta)
-  r_vectors[:,2] = radius_body * sin.(theta)
+  r_vectors = Array{Float64,2}(undef, 2, Nmarkers)
+  r_vectors[1,:] = radius_body * cos.(theta)
+  r_vectors[2,:] = radius_body * sin.(theta)
   b = body_module.body(q, orientation, r_vectors)
   push!(bodies, b)
 end
@@ -74,20 +74,17 @@ for step = initial_step:1:n_steps
   end
 
   # Build tree
-  kdtree = NearestNeighbors.KDTree(r_vectors; leafsize = 64)
+  # kdtree = NearestNeighbors.KDTree(r_vectors; leafsize = 64)
 
   # Loop over bodies
   bodies_indices = Random.shuffle(rng, Vector{Int64}(1:length(bodies)))
   for i = 1 : length(bodies)
     # Select body at random
     bi = bodies_indices[i]
-    # bi = rand(1:length(bodies))
     b = bodies[bi]
-    # b = bodies[bi]
 
     # Select its r_vectors
-    ri = r_vectors[r_vectors_offsets[bi] : r_vectors_offsets[bi]+b.Nmarkers-1, 1:end]
-    # ri = body_module.get_r_vectors(b)
+    ri = r_vectors[1:end, r_vectors_offsets[bi] : r_vectors_offsets[bi]+b.Nmarkers-1]
 
     # Compute energy
     e_current = external_enery(b, radius)
@@ -100,7 +97,7 @@ for step = initial_step:1:n_steps
     b.q += dq
     b.orientation += dorientation
     ri = body_module.get_r_vectors(b)
-    r_vectors[r_vectors_offsets[bi] : r_vectors_offsets[bi]+b.Nmarkers-1, 1:end] = body_module.get_r_vectors(b)
+    r_vectors[1:end, r_vectors_offsets[bi] : r_vectors_offsets[bi]+b.Nmarkers-1] = body_module.get_r_vectors(b)
 
     # Compute new energy
     e_new = external_enery(b, radius)
@@ -108,17 +105,16 @@ for step = initial_step:1:n_steps
     e_new += pairwise_energy_surface(ri, r_vectors, e0, lambda)
   
     # Do Metropolies step
-    # println("-(e_new - e_current) / kT = ", bi, "  ", -(e_new - e_current) / kT)
     mcmc = exp(-(e_new - e_current) / kT)
     rn = rand(rng, Float64)
     if rn < mcmc
       b.q_old = copy(b.q)
       b.orientation_old = copy(b.orientation)
-      r_vectors[r_vectors_offsets[bi] : r_vectors_offsets[bi]+b.Nmarkers-1, 1:end] = body_module.get_r_vectors(b)
+      r_vectors[1:end, r_vectors_offsets[bi] : r_vectors_offsets[bi]+b.Nmarkers-1] = body_module.get_r_vectors(b)
     else
       b.q = copy(b.q_old)
       b.orientation = copy(b.orientation_old)
-      r_vectors[r_vectors_offsets[bi] : r_vectors_offsets[bi]+b.Nmarkers-1, 1:end] = body_module.get_r_vectors(b)
+      r_vectors[1:end, r_vectors_offsets[bi] : r_vectors_offsets[bi]+b.Nmarkers-1] = body_module.get_r_vectors(b)
     end
   end
 end

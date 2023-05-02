@@ -11,7 +11,7 @@ function get_r_vectors(bodies)
   r_vectors = body_module.get_r_vectors(bodies[1])
   offset = 1 + bodies[1].Nmarkers
   for b in bodies[2:end]
-    r_vectors = [r_vectors ; body_module.get_r_vectors(b)]
+    r_vectors = hcat(r_vectors, body_module.get_r_vectors(b))
     offset += b.Nmarkers
   end
   return r_vectors
@@ -22,10 +22,10 @@ function get_r_vectors(bodies, Nmarkers::Int64)
   "Return r_vectors for the current bodies orientations."
 
   # Prepare vector and rotation matrix
-  r_vectors = Array{Float64,2}(undef, Nmarkers, 2)
+  r_vectors = Array{Float64,2}(undef, 2, Nmarkers)
   offset = 1
   for b in bodies
-    r_vectors[offset:offset+b.Nmarkers-1,1:end] = body_module.get_r_vectors(b)
+    r_vectors[1:end, offset:offset+b.Nmarkers-1] = body_module.get_r_vectors(b)
     offset += b.Nmarkers
   end
   

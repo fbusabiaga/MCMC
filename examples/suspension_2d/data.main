@@ -1,6 +1,6 @@
 # Number of steps and save frequency
-n_steps                                  10
-n_save                                   1
+n_steps                                  1000
+n_save                                   10
 initial_step                             1
 
 # Define thermal energy

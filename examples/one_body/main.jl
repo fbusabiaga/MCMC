@@ -34,9 +34,9 @@ q = [0, 0]
 orientation = 0
 N_blobs = 32
 theta = collect(range(0,2*pi,length=N_blobs+1)[1:end-1])
-r_vectors = Array{Float64,2}(undef, N_blobs, 2)
-r_vectors[:,1] = cos.(theta)
-r_vectors[:,2] = sin.(theta)
+r_vectors = Array{Float64,2}(undef, 2, N_blobs)
+r_vectors[1,:] = cos.(theta)
+r_vectors[2,:] = sin.(theta)
 b = body_module.body(q, orientation, r_vectors)
 
 # Open output files
