@@ -2,7 +2,6 @@
 
 # Include external modules
 import Random
-# using Random
 
 # Include local modules
 include("../../src/read_input/read_input.jl")

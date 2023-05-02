@@ -9,6 +9,8 @@ include("../../src/read_input/read_input.jl")
 import .read_input
 include("../../src/body/body.jl")
 import .body_module
+include("../../src/quaternion/quaternion.jl")
+using .quaternion_module
 include("../../src/many_bodies/many_bodies_utils.jl")
 import .many_bodies_utils
 include("energy.jl")
@@ -37,11 +39,23 @@ d_tree = 2 * dx + 25 * lambda
 # Create bodies
 number_bodies = haskey(options, "number_bodies") ? parse(Int64, options["number_bodies"][1]) : 1
 radius_body = haskey(options, "radius_body") ? parse(Int64, options["radius_body"][1]) : 1
+r_vectors = transpose([0.000000000000000e+00	0.000000000000000e+00	1.000000000000000e+00;
+                       2.763932022500211e-01	8.506508083520399e-01	4.472135954999580e-01;
+                       -7.236067977499789e-01	5.257311121191337e-01	4.472135954999580e-01;
+                       -7.236067977499790e-01	-5.257311121191336e-01	4.472135954999580e-01;
+                       2.763932022500208e-01	-8.506508083520400e-01	4.472135954999580e-01;
+                       8.944271909999159e-01	-2.190714793056811e-16	4.472135954999580e-01;
+                       7.236067977499789e-01	5.257311121191337e-01	-4.472135954999580e-01;
+                       -2.763932022500209e-01	8.506508083520400e-01	-4.472135954999580e-01;
+                       -8.944271909999159e-01	1.095357396528405e-16	-4.472135954999580e-01;
+                       -2.763932022500212e-01	-8.506508083520399e-01	-4.472135954999580e-01;
+                       7.236067977499789e-01	-5.257311121191337e-01	-4.472135954999580e-01;
+                       0.000000000000000e+00	0.000000000000000e+00	-1.000000000000000e+00])
 bodies = []
 for i = 1:number_bodies
   e_current = 1
   while e_current > 0
-    global q = (Random.rand(rng, Float64, 2) - [0.5, 0.5]) * 2 * radius
+    global q = (Random.rand(rng, Float64, 3) - [0.5, 0.5, 0.5]) * 2 * radius
     e_current = LA.norm(q) > radius - radius_body ? Inf : 0
     for bi in bodies
       d = LA.norm(q - bi.q)
@@ -50,12 +64,9 @@ for i = 1:number_bodies
     end
     println("i = ", i, ", e_current = ", e_current)
   end  
-  orientation = Random.rand(rng, Float64) * 2 * pi
+  orientation = quaternion_module.quaternion([1 0 0 0])  
   Nmarkers = 32
   theta = collect(range(0,2*pi,length=Nmarkers+1)[1:end-1])
-  r_vectors = Array{Float64,2}(undef, 2, Nmarkers)
-  r_vectors[1,:] = radius_body * cos.(theta)
-  r_vectors[2,:] = radius_body * sin.(theta)
   b = body_module.body(q, orientation, r_vectors)
   push!(bodies, b)
 end
@@ -104,10 +115,10 @@ for step = initial_step:1:n_steps-1
     e_current += pairwise_energy_surface(ri, r_vectors, indx, e0, lambda)
     
     # Random step
-    dq = Random.randn(rng, Float64, 2) * dx
-    dorientation = Random.randn(rng, Float64) * dtheta
+    dq = Random.randn(rng, Float64, 3) * dx
     b.q += dq
-    b.orientation += dorientation
+    dorientation = quaternion_module.quaternion(randn(rng, Float64, 4) * dtheta)
+    b.orientation = dorientation * b.orientation    
     ri = body_module.get_r_vectors(b)
     r_vectors[1:end, r_vectors_offsets[bi] : r_vectors_offsets[bi]+b.Nmarkers-1] = body_module.get_r_vectors(b)
 
@@ -120,11 +131,11 @@ for step = initial_step:1:n_steps-1
     rn = rand(rng, Float64)
     if rn < mcmc
       b.q_old = copy(b.q)
-      b.orientation_old = copy(b.orientation)
+      b.orientation_old = deepcopy(b.orientation)
       r_vectors[1:end, r_vectors_offsets[bi] : r_vectors_offsets[bi]+b.Nmarkers-1] = body_module.get_r_vectors(b)
     else
       b.q = copy(b.q_old)
-      b.orientation = copy(b.orientation_old)
+      b.orientation = deepcopy(b.orientation_old)
       r_vectors[1:end, r_vectors_offsets[bi] : r_vectors_offsets[bi]+b.Nmarkers-1] = body_module.get_r_vectors(b)
     end
   end

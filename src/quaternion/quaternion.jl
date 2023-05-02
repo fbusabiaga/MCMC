@@ -3,6 +3,7 @@ module quaternion_module
 
 # Load modules
 import LinearAlgebra as LA
+import Base.*
 
 # Exports
 # export quaternion
@@ -22,6 +23,9 @@ struct quaternion
     new(q[1] / q_norm, q[2:end] / q_norm)
   end 
 end
+
+# Define quaternion multiplication
+*(q2::quaternion, q1::quaternion) = quaternion(q2.s*q1.s - LA.dot(q2.p, q1.p), q2.s*q1.p + q1.s*q2.p + LA.cross(q2.p, q1.p))
 
 # Print quaternion in nice way
 Base.show(io::IO, q::quaternion) = print(io, q.s, " ", join(q.p, " "))

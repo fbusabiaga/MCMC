@@ -73,7 +73,6 @@ for step = initial_step:1:n_steps
   b.q += dq
   dorientation = quaternion_module.quaternion(randn(rng, Float64, 4) * dtheta)
   b.orientation = dorientation * b.orientation
-  # b.orientation += dorientation
 
   # Compute new energy
   e_new = external_enery(b, radius)
