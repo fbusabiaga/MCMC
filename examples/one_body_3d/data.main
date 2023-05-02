@@ -1,0 +1,14 @@
+# Number of steps and save frequency
+n_steps                                  100
+n_save                                   1
+
+# Define thermal energy
+kT                                       1
+dx                                       0.1
+dtheta                                   0.5
+
+# Define energy parameters
+radius                                   10
+
+# Oputfile
+output_name                              /home/fbalboa/simulations/MCMC/data/run0/run3/run3.0.0.0
