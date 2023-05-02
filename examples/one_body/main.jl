@@ -45,12 +45,12 @@ f_config = open(output_name * ".config", "w")
 # Loop steps
 n_steps = parse(Int, options["n_steps"][1])
 n_save = parse(Int, options["n_save"][1])
-initial_step = parse(Int, options["initial_step"][1])
+initial_step = haskey(options, "initial_step") ? parse(Int64, options["initial_step"][1]) : 0
 for step = initial_step:1:n_steps
   println("step = ", step)
 
   # Save config
-  if (step % n_save == 0) && (step > 0)
+  if (step % n_save == 0) && (step >= 0)
     write(f_config, string(1), "\n")
     println(f_config, join(b.q, " "), " ", b.orientation)
   end
